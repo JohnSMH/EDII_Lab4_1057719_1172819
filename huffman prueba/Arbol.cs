@@ -75,7 +75,7 @@ namespace huffman_prueba
             }
             string palabras = "";
             string conocer = "";
-            int repfrec = 0;
+            int repfrec = 1;
             foreach (T value in counts.Keys)
             {
                 conocer = counts[value].ToString();
