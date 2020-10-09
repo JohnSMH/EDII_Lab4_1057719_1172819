@@ -10,11 +10,17 @@ namespace huffman_prueba
         {
             var huffman = new Huffman<char>("aaaabbbccd");
             List<int> encoding = huffman.Encode("aaaabbbccd");
-            //var outString = new string(decoding.ToArray());
+            //for (int i = 0; i < length; i++)
+            //{
+            //    huffman.Encode("Seccioni");
+            //}
+            List<char> decoding1 = huffman.Decode(encoding);
+            var outString = new string(decoding1.ToArray());
             //Console.WriteLine(outString == "aaaabbbccd" ? "Encoding/decoding worked" : "Encoding/Decoding failed");
             var chars = new HashSet<char>("aaaabbbccd");
             char[] letras = new char[chars.Count];
             string texto = "";
+            
 
             for (int i = 0; i < encoding.Count; i++)
             {
@@ -23,18 +29,20 @@ namespace huffman_prueba
             var data = huffman.GetBytesFromBinaryString(texto);
             var text = Encoding.ASCII.GetString(data);
             string texto2 = "";
+            
             foreach (char x in text)
             {
                 Console.Write("{0}", x);
             }
             Console.WriteLine("");
+            
             texto2 = huffman.conoceri + texto;
             List<char> decoding = huffman.decodificar(texto2);
             foreach (char item in decoding)
             {
                 Console.Write(item);
             }
-
+           
 
             foreach (char c in chars)
             {

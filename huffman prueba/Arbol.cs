@@ -172,14 +172,14 @@ namespace huffman_prueba
             int bytes = int.Parse(codigo.Substring(1,1)) + 1;
             int frecuencia = 0;
             int probabilidad = 0;
-            for (int i = 3; i < cantvalores; i += 2)
+            for (int i = 3; i < cantvalores*2+2; i += 2)
             {
-                frecuencia = int.Parse(codigo.Substring(i, i - 2));
+                frecuencia = int.Parse(codigo.Substring(i,1));
                 probabilidad += frecuencia; }
-            for (int i = 3; i < cantvalores; i = +2)
+            for (int i = 2; i < cantvalores*2+2; i += 2)
             {
-                string letra = codigo.Substring(i, i - 2);
-                frecuencia = int.Parse(codigo.Substring(i, i - 2));
+                string letra = codigo.Substring(i,1);
+                frecuencia = int.Parse(codigo.Substring(i+1,1));
                 counts.Add(GetValue(letra), frecuencia);
                 var node = new HuffmanNode<T>((double)frecuencia / probabilidad, GetValue(letra));
                 coladeprioridad.Enqueue(node.Probability, node);
@@ -195,9 +195,9 @@ namespace huffman_prueba
 
             _root = coladeprioridad.Dequeue();
             List<int> codigos = new List<int>();
-            for (int i = (cantvalores * (bytes + 1)); i < codigo.Length - (cantvalores * (bytes + 1)); i++)
+            for (int i = (cantvalores * 2)+2; i < codigo.Length; i++)
             {
-                codigos[i] = int.Parse(codigo.Substring(i));
+                codigos.Add(int.Parse(codigo.Substring(i,1)));
             }
             List<T> palabra = new List<T>();
             
