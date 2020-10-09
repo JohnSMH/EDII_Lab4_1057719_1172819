@@ -55,8 +55,8 @@ namespace huffman_prueba
     public class Huffman<T> where T : IComparable
     {
         private readonly Dictionary<T, HuffmanNode<T>> _leafDictionary = new Dictionary<T, HuffmanNode<T>>();
-        private readonly HuffmanNode<T> _root;
-
+        private  HuffmanNode<T> _root;
+        public string conoceri = "";
         public Huffman(IEnumerable<T> values)
         {
             var counts = new Dictionary<T, int>();
@@ -73,9 +73,29 @@ namespace huffman_prueba
                 counts[value]++;
                 valueCount++;
             }
+            string palabras = "";
+            string conocer = "";
+            string repfrec = "";
 
             foreach (T value in counts.Keys)
             {
+               
+                conocer = counts[value].ToString();
+                if (conocer.Length > 1)
+                {
+                    for (int i = 0; i < conocer.Length -1; i++)
+                    {
+                        repfrec += "0";
+                    }
+                    palabras += value.ToString() + counts[value];
+                    repfrec = "";
+
+                }
+                else
+                {
+                    palabras +=  value.ToString() + repfrec + counts[value];
+                }
+                conoceri = counts.Count.ToString() + ((conocer.Length)).ToString() + palabras;
                 var node = new HuffmanNode<T>((double)counts[value] / valueCount, value);
                 coladeprioridad.Enqueue(node.Probability ,node);
                 _leafDictionary[value] = node;
@@ -143,6 +163,52 @@ namespace huffman_prueba
             }
             return nodeCur.Value;
         }
+
+        public List<T> decodificar(string codigo)
+        {
+            var counts = new Dictionary<T, int>();
+            var coladeprioridad = new Coladeprioridad<HuffmanNode<T>>();
+            int cantvalores = int.Parse(codigo.Substring(0, 1));
+            int bytes = int.Parse(codigo.Substring(1,1)) + 1;
+            int frecuencia = 0;
+            int probabilidad = 0;
+            for (int i = 3; i < cantvalores; i += 2)
+            {
+                frecuencia = int.Parse(codigo.Substring(i, i - 2));
+                probabilidad += frecuencia; }
+            for (int i = 3; i < cantvalores; i = +2)
+            {
+                string letra = codigo.Substring(i, i - 2);
+                frecuencia = int.Parse(codigo.Substring(i, i - 2));
+                counts.Add(GetValue(letra), frecuencia);
+                var node = new HuffmanNode<T>((double)frecuencia / probabilidad, GetValue(letra));
+                coladeprioridad.Enqueue(node.Probability, node);
+                _leafDictionary[GetValue(letra)] = node;
+            }
+            while (coladeprioridad.contar > 1)
+            {
+                HuffmanNode<T> hijoizquieda = coladeprioridad.Dequeue();
+                HuffmanNode<T> rightSon = coladeprioridad.Dequeue();
+                var parent = new HuffmanNode<T>(hijoizquieda, rightSon);
+                coladeprioridad.Enqueue(parent.Probability, parent);
+            }
+
+            _root = coladeprioridad.Dequeue();
+            List<int> codigos = new List<int>();
+            for (int i = (cantvalores * (bytes + 1)); i < codigo.Length - (cantvalores * (bytes + 1)); i++)
+            {
+                codigos[i] = int.Parse(codigo.Substring(i));
+            }
+            List<T> palabra = new List<T>();
+            
+            return Decode(codigos);
+
+        }
+        public static T GetValue(string value)
+        {
+            return (T)Convert.ChangeType(value, typeof(T));
+        }
+
 
         public List<T> Decode(List<int> bitString)
         {
