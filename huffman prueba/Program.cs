@@ -33,6 +33,7 @@ namespace huffman_prueba
                 guardar.Add(item);
             }
             string texto2 = "";
+            
             foreach (char x in text)
             {
                 Console.Write("{0}", x);

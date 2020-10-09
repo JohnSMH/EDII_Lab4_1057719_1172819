@@ -75,31 +75,25 @@ namespace huffman_prueba
             }
             string palabras = "";
             string conocer = "";
-            string repfrec = "";
-
+            int repfrec = 0;
             foreach (T value in counts.Keys)
             {
-               
                 conocer = counts[value].ToString();
                 if (conocer.Length > 1)
                 {
-                    for (int i = 0; i < conocer.Length -1; i++)
-                    {
-                        repfrec += "0";
-                    }
-                    palabras += value.ToString() + counts[value];
-                    repfrec = "";
+                    repfrec = conocer.Length;
+                }
+            }
+            foreach (T value in counts.Keys)
+            {
 
-                }
-                else
-                {
-                    palabras += value.ToString() + repfrec + counts[value];
-                }
+                palabras += value.ToString() + counts[value].ToString().PadLeft(repfrec, '0');
                 conoceri = counts.Count.ToString() + ((conocer.Length)).ToString() + palabras;
                 var node = new HuffmanNode<T>((double)counts[value] / valueCount, value);
                 coladeprioridad.Enqueue(node.Probability ,node);
                 _leafDictionary[value] = node;
             }
+
 
             while (coladeprioridad.contar > 1)
             {
