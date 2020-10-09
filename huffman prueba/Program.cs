@@ -20,16 +20,19 @@ namespace huffman_prueba
             var chars = new HashSet<char>("aaaabbbccd");
             char[] letras = new char[chars.Count];
             string texto = "";
-            
+            List<char> guardar = new List<char>();
 
             for (int i = 0; i < encoding.Count; i++)
             {
                 texto += encoding[i];
             }
             var data = huffman.GetBytesFromBinaryString(texto);
-            var text = Encoding.ASCII.GetString(data);
+            var text = System.Text.Encoding.UTF8.GetString(data);
+            foreach (char item in text)
+            {
+                guardar.Add(item);
+            }
             string texto2 = "";
-            
             foreach (char x in text)
             {
                 Console.Write("{0}", x);
@@ -37,7 +40,7 @@ namespace huffman_prueba
             Console.WriteLine("");
             
             texto2 = huffman.conoceri + texto;
-            List<char> decoding = huffman.decodificar(texto2);
+            List<char> decoding = huffman.ArmarArbol(texto2);
             foreach (char item in decoding)
             {
                 Console.Write(item);

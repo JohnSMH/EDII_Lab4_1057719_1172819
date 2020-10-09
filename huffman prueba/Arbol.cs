@@ -93,7 +93,7 @@ namespace huffman_prueba
                 }
                 else
                 {
-                    palabras +=  value.ToString() + repfrec + counts[value];
+                    palabras += value.ToString() + repfrec + counts[value];
                 }
                 conoceri = counts.Count.ToString() + ((conocer.Length)).ToString() + palabras;
                 var node = new HuffmanNode<T>((double)counts[value] / valueCount, value);
@@ -164,8 +164,9 @@ namespace huffman_prueba
             return nodeCur.Value;
         }
 
-        public List<T> decodificar(string codigo)
+        public List<T> ArmarArbol(string codigo)
         {
+
             var counts = new Dictionary<T, int>();
             var coladeprioridad = new Coladeprioridad<HuffmanNode<T>>();
             int cantvalores = int.Parse(codigo.Substring(0, 1));
@@ -231,6 +232,7 @@ namespace huffman_prueba
                 if ((binary.Length-i)<8)
                 {
                     h = binary.Substring(i, binary.Length - i);
+                    h = h.PadRight(8,'0');
                     list.Add(Convert.ToByte(h, 2));
                 }
                 else
