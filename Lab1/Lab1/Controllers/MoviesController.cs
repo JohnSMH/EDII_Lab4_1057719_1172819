@@ -5,17 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using API_HUFFMAN;
+using Lab1.Models;
+using Lab1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
+using huffman_prueba;
 
-namespace API_HUFFMAN.Controllers
+namespace Lab1.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
-    public class HuffmanController : ControllerBase
+    public class MoviesController : ControllerBase
     {
+        [HttpGet]
+        public IActionResult Mostrar()
+        {
+            return new JsonResult(new { BIENVENIDA = "LABORATORIO 1" }); 
+        }
+
         [HttpGet("{traversal}")]
         public ActionResult GetByOrder([FromRoute] string traversal)
         {
@@ -29,13 +37,14 @@ namespace API_HUFFMAN.Controllers
         {
             try
             {
+                name = name + ".huff";
                 TextWriter escritor = new StreamWriter(name, true);
                 string result;
                 using (var reader = new StreamReader(file.OpenReadStream()))
                 {
-                     result = reader.ReadToEnd();
+                    result = reader.ReadToEnd();
                 }
-                var huffman = new Huffman<char>(result);
+                
                 List<int> encoding = huffman.Encode(result);
 
                 var chars = new HashSet<char>(result);
@@ -66,12 +75,26 @@ namespace API_HUFFMAN.Controllers
 
 
         // POST: api/movies/populate/<Peliculas>
-        [Route("populate")]
-        public IActionResult PostMovies([FromForm]IFormFile file)
+        [Route("descompress")]
+        public IActionResult Decompresion([FromRoute] string descompress, [FromForm]IFormFile file)
         {
             using var content = new MemoryStream();
             try
             {
+                if (descompress == "descompress")
+                {
+                    string result;
+                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    {
+                        result = reader.ReadToEnd();
+                    }
+                    var huffman = new Huffman<char>(result);
+                    List<char> decoding = huffman.ArmarArbol(result);
+                    foreach (char item in decoding)
+                    {
+                        Console.Write(item);
+                    }
+                }
                 return Ok();
             }
             catch (Exception ex)
@@ -80,5 +103,6 @@ namespace API_HUFFMAN.Controllers
             }
 
         }
+
     }
 }
