@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using huffman_prueba;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace Lab1.Controllers
 {
@@ -24,10 +25,14 @@ namespace Lab1.Controllers
             return new JsonResult(new { BIENVENIDA = "LABORATORIO 1" }); 
         }
 
-        [HttpGet("{traversal}")]
-        public ActionResult GetByOrder([FromRoute] string traversal)
+        [HttpGet("{compressions}")]
+        public ActionResult Compressions([FromRoute] string compressions)
         {
-            return NotFound();
+            if (compressions=="compressions")
+            {
+
+            }
+            
         }
 
 
@@ -37,6 +42,7 @@ namespace Lab1.Controllers
         {
             try
             {
+                Data.Instance.nombre = name;
                 name = name + ".huff";
                 TextWriter escritor = new StreamWriter(name, true);
                 string result;
@@ -44,7 +50,7 @@ namespace Lab1.Controllers
                 {
                     result = reader.ReadToEnd();
                 }
-                
+                var huffman = new Huffman<char>(result);
                 List<int> encoding = huffman.Encode(result);
 
                 var chars = new HashSet<char>(result);
@@ -74,7 +80,7 @@ namespace Lab1.Controllers
         }
 
 
-        // POST: api/movies/populate/<Peliculas>
+        // POST: api/descompress DESCOMPRIR
         [Route("descompress")]
         public IActionResult Decompresion([FromRoute] string descompress, [FromForm]IFormFile file)
         {
@@ -92,10 +98,18 @@ namespace Lab1.Controllers
                     List<char> decoding = huffman.ArmarArbol(result);
                     foreach (char item in decoding)
                     {
-                        Console.Write(item);
+                        Data.Instance.texto += item;
                     }
+
+                    StreamWriter archivo = new StreamWriter(Data.Instance.nombre);
+                    archivo.Write(Data.Instance.texto);
+                    return Ok();
                 }
-                return Ok();
+                else
+                {
+                    return BadRequest("No se coloco bien la ruta");
+                }
+                
             }
             catch (Exception ex)
             {

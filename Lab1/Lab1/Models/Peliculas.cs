@@ -5,20 +5,13 @@ using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
 namespace Lab1.Models
 {
-    public class Peliculas:IComparable<Peliculas>
+    public class Datos
     {
-        public string director { get; set; }
-        public double imdbRating { get; set; }
-        public string genre { get; set; }
-        public string releaseDate { get; set; }
-        public int rottenTomatoesRating { get; set; }
-        public string title { get; set; }
+        public string Nombredelarchivooriginal { get; set; }
+        public string Nombreyrutadelarchivocomprimido { get; set; }
+        public double Razóndecompresión { get; set; }
+        public double Factordecompresión { get; set; }
+        public double Porcentajedereducción { get; set; }
 
-        
-
-        int IComparable<Peliculas>.CompareTo(Peliculas other)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
