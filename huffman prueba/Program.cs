@@ -14,7 +14,7 @@ namespace huffman_prueba
             //{
             //    huffman.Encode("Seccioni");
             //}
-            List<char> decoding1 = huffman.Decode(encoding);
+            List<char> decoding1 = huffman.Decode(encoding,10);
             var outString = new string(decoding1.ToArray());
             //Console.WriteLine(outString == "aaaabbbccd" ? "Encoding/decoding worked" : "Encoding/Decoding failed");
             var chars = new HashSet<char>("aaaabbbccd");
@@ -36,9 +36,19 @@ namespace huffman_prueba
            
             
             texto2 = huffman.conoceri + valor;
+            string bits = huffman.Regresar(texto2);
+            List<int> vs = new List<int>();
+            foreach (var item in bits.ToCharArray())
+            {
+                vs.Add(int.Parse(item.ToString()));
+            }
+            List<char> test = huffman.Decode(vs,10);
             Console.WriteLine(texto2);
-            List<char> decoding = huffman.ArmarArbol(texto2);
-            foreach (char item in decoding)
+           
+            huffman.ArmarArbol(texto2);
+
+            
+            foreach (char item in decoding1)
             {
                 Console.Write(item);
             }

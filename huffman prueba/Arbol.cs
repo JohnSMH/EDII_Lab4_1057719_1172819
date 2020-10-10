@@ -167,7 +167,7 @@ namespace huffman_prueba
             return nodeCur.Value;
         }
 
-        public List<T> ArmarArbol(string codigo)
+        public void ArmarArbol(string codigo)
         {
 
             var counts = new Dictionary<T, int>();
@@ -198,27 +198,28 @@ namespace huffman_prueba
             }
             
             _root = coladeprioridad.Dequeue();
-            List<int> codigos = new List<int>();
-            for (int i = (cantvalores * bytes) + 2; i < codigo.Length; i++)
-            {
-                codigos.Add(int.Parse(codigo.Substring(i, 1)));
-            }
-            List<T> palabra = new List<T>();
-
-            return null;
         }
 
-        public static void Regresar(string codigo) {
+        public string Regresar(string codigo) {
             int cantvalores = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(0, 1))));
             int bytes = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(1, 1)))) + 1;
             List<int> codigos = new List<int>();
             string aconvertir = codigo.Substring((cantvalores * bytes) + 2);
-
-            for (int i = 0; i < codigo.Length; i++)
+            List<byte> arrbytes = new List<byte>();
+            String cadenabits = "";
+            foreach (var item in aconvertir.ToCharArray())
             {
-                codigos.Add(int.Parse(codigo.Substring(i, 1)));
+                arrbytes.Add(Convert.ToByte(item));
+            }
+            foreach (var item in arrbytes)
+            {
+                cadenabits += Convert.ToString(item,2).PadLeft(8,'0');
             }
 
+
+            //yourByteString = Convert.ToString(valoresutf[0], 2).PadLeft(8, '0'); 
+
+            return cadenabits;
         }
 
         public static T GetValue(string value)
@@ -227,13 +228,15 @@ namespace huffman_prueba
         }
 
 
-        public List<T> Decode(List<int> bitString)
+        public List<T> Decode(List<int> bitString,int maxvalores)
         {
             int position = 0;
             var returnValue = new List<T>();
 
             while (position != bitString.Count)
             {
+                if (returnValue.Count == maxvalores)
+                    break;
                 returnValue.Add(Decode(bitString, ref position));
             }
             return returnValue;
