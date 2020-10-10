@@ -18,7 +18,6 @@ namespace huffman_prueba
             var outString = new string(decoding1.ToArray());
             //Console.WriteLine(outString == "aaaabbbccd" ? "Encoding/decoding worked" : "Encoding/Decoding failed");
             var chars = new HashSet<char>("aaaabbbccd");
-            char[] letras = new char[chars.Count];
             string texto = "";
             List<char> guardar = new List<char>();
 
