@@ -172,8 +172,8 @@ namespace huffman_prueba
 
             var counts = new Dictionary<T, int>();
             var coladeprioridad = new Coladeprioridad<HuffmanNode<T>>();
-            int cantvalores = int.Parse(codigo.Substring(0, 1)); //CAMBIAR
-            int bytes = int.Parse(codigo.Substring(1,1)) + 1;
+            int cantvalores = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(0, 1))));
+            int bytes = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(1, 1))))+1;
             int frecuencia = 0;
             int probabilidad = 0;
             for (int i = 3; i < cantvalores*(bytes)+2; i += bytes)
@@ -196,18 +196,31 @@ namespace huffman_prueba
                 var parent = new HuffmanNode<T>(hijoizquieda, rightSon);
                 coladeprioridad.Enqueue(parent.Probability, parent);
             }
-
+            
             _root = coladeprioridad.Dequeue();
             List<int> codigos = new List<int>();
-            for (int i = (cantvalores * bytes)+2; i < codigo.Length; i++)
+            for (int i = (cantvalores * bytes) + 2; i < codigo.Length; i++)
             {
-                codigos.Add(int.Parse(codigo.Substring(i,1)));
+                codigos.Add(int.Parse(codigo.Substring(i, 1)));
             }
             List<T> palabra = new List<T>();
-            
-            return Decode(codigos);
+
+            return null;
+        }
+
+        public static void Regresar(string codigo) {
+            int cantvalores = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(0, 1))));
+            int bytes = Convert.ToInt32(BitConverter.ToString(Encoding.UTF8.GetBytes(codigo.Substring(1, 1)))) + 1;
+            List<int> codigos = new List<int>();
+            string aconvertir = codigo.Substring((cantvalores * bytes) + 2);
+
+            for (int i = 0; i < codigo.Length; i++)
+            {
+                codigos.Add(int.Parse(codigo.Substring(i, 1)));
+            }
 
         }
+
         public static T GetValue(string value)
         {
             return (T)Convert.ChangeType(value, typeof(T));
