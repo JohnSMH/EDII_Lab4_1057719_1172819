@@ -58,12 +58,17 @@ namespace huffman_prueba
         private readonly Dictionary<T, HuffmanNode<T>> _leafDictionary = new Dictionary<T, HuffmanNode<T>>();
         private  HuffmanNode<T> _root;
         public string conoceri = "";
-        public Huffman(IEnumerable<T> values)
+        public Dictionary<T, int> counts;
+        public int valueCount = 0;
+
+        public Huffman()
         {
             var counts = new Dictionary<T, int>();
             var coladeprioridad = new Coladeprioridad<HuffmanNode<T>>();
-            int valueCount = 0;
-
+        }
+        public Huffman(IEnumerable<T> values)
+        {
+            var coladeprioridad = new Coladeprioridad<HuffmanNode<T>>();
 
             foreach (T value in values)
             {
@@ -85,6 +90,7 @@ namespace huffman_prueba
                     repfrec = conocer.Length;
                 }
             }
+
             byte[] Bytesdevalores = new byte[1];
             Bytesdevalores[0]=Convert.ToByte(counts.Count);
             var numvalores = Encoding.UTF8.GetString(Bytesdevalores);

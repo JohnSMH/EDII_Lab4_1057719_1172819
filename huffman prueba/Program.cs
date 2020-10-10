@@ -10,13 +10,8 @@ namespace huffman_prueba
         {
             var huffman = new Huffman<char>("aaaabbbccd");
             List<int> encoding = huffman.Encode("aaaabbbccd");
-            //for (int i = 0; i < length; i++)
-            //{
-            //    huffman.Encode("Seccioni");
-            //}
             List<char> decoding1 = huffman.Decode(encoding,10);
             var outString = new string(decoding1.ToArray());
-            //Console.WriteLine(outString == "aaaabbbccd" ? "Encoding/decoding worked" : "Encoding/Decoding failed");
             var chars = new HashSet<char>("aaaabbbccd");
             string texto = "";
             List<char> guardar = new List<char>();
