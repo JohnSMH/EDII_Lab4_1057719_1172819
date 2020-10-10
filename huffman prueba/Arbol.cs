@@ -85,16 +85,23 @@ namespace huffman_prueba
                     repfrec = conocer.Length;
                 }
             }
+            byte[] Bytesdevalores = new byte[1];
+            Bytesdevalores[0]=Convert.ToByte(counts.Count);
+            var numvalores = Encoding.UTF8.GetString(Bytesdevalores);
+            
+            byte[] Bytesdecantidad = BitConverter.GetBytes(repfrec);
+            string numcantidad = Encoding.UTF8.GetString(Bytesdecantidad);
+            
+
             foreach (T value in counts.Keys)
             {
 
                 palabras += value.ToString() + counts[value].ToString().PadLeft(repfrec, '0');
-                conoceri = counts.Count.ToString() + repfrec.ToString() + palabras;
                 var node = new HuffmanNode<T>((double)counts[value] / valueCount, value);
                 coladeprioridad.Enqueue(node.Probability ,node);
                 _leafDictionary[value] = node;
             }
-
+            conoceri = numvalores + numcantidad + palabras;
 
             while (coladeprioridad.contar > 1)
             {
