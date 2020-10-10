@@ -88,9 +88,10 @@ namespace huffman_prueba
             byte[] Bytesdevalores = new byte[1];
             Bytesdevalores[0]=Convert.ToByte(counts.Count);
             var numvalores = Encoding.UTF8.GetString(Bytesdevalores);
-            
-            byte[] Bytesdecantidad = BitConverter.GetBytes(repfrec);
-            string numcantidad = Encoding.UTF8.GetString(Bytesdecantidad);
+
+            byte[] Bytesdecantidad = new byte[1];
+            Bytesdecantidad[0] = Convert.ToByte(repfrec);
+            var numcantidad = Encoding.UTF8.GetString(Bytesdecantidad);
             
 
             foreach (T value in counts.Keys)

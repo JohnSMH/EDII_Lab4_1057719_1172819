@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using huffman_prueba;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Lab1.Controllers
 {
@@ -30,9 +31,9 @@ namespace Lab1.Controllers
         {
             if (compressions=="compressions")
             {
-
+                return 0;
             }
-            
+            return 0;
         }
 
 

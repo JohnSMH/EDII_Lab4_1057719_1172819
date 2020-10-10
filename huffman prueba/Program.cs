@@ -26,20 +26,17 @@ namespace huffman_prueba
                 texto += encoding[i];
             }
             var data = huffman.GetBytesFromBinaryString(texto);
-            var text = System.Text.Encoding.UTF8.GetString(data);
-            foreach (char item in text)
+            string valor = "";
+            foreach (var item in data)
             {
-                guardar.Add(item);
+                valor += (char)item;
             }
+
             string texto2 = "";
+           
             
-            foreach (char x in text)
-            {
-                Console.Write("{0}", x);
-            }
-            Console.WriteLine("");
-            
-            texto2 = huffman.conoceri + texto;
+            texto2 = huffman.conoceri + valor;
+            Console.WriteLine(texto2);
             List<char> decoding = huffman.ArmarArbol(texto2);
             foreach (char item in decoding)
             {
