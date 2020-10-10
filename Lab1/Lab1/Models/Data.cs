@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lab1.Models;
+using huffman_prueba;
 
 namespace Lab1.Models
 {
@@ -20,6 +21,7 @@ namespace Lab1.Models
 
         }
 
+        public Huffman<char> huffman = new huffman_prueba.Huffman<char>();
         public int Size = 0;
         public string nombre = "";
         public string texto = "";

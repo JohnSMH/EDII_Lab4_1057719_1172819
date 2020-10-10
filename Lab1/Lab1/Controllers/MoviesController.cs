@@ -44,32 +44,72 @@ namespace Lab1.Controllers
         {
             try
             {
+                //armar el arbol
                 Data.Instance.nombre = name;
-                using var fileWritten = new FileStream(name, FileMode.OpenOrCreate);
-                using var reader = new BinaryReader(fileWritten);
+                using var fileRead = new FileStream(name, FileMode.OpenOrCreate);
+                using var reader = new BinaryReader(fileRead);
                 var buffer = new byte[2000];
-                while (fileWritten.Position < fileWritten.Length)
+                while (fileRead.Position < fileRead.Length)
                 {
                     buffer = reader.ReadBytes(2000);
                     foreach (var value in buffer)
                     {
-
+                        Data.Instance.huffman.fill((char)value);
                     }
                 }
                 reader.Close();
-                fileWritten.Close();
+                fileRead.Close();
+                //encodificar el archivo
+                String metadata = Data.Instance.huffman.Huff();
 
-
-                StreamWriter nuevoarchivo = new StreamWriter(name);
-                nuevoarchivo.Write(texto2);
-
-                name = name + ".huff";
-                TextWriter escritor = new StreamWriter(name, true);
-                string result;
-                using (var reader = new StreamReader(file.OpenReadStream()))
+                using var fileRead2 = new FileStream(name, FileMode.OpenOrCreate);
+                using var reader2 = new BinaryReader(fileRead);
+                buffer = new byte[2000];
+                String texto = "";
+                while (fileRead2.Position < fileRead2.Length)
                 {
-                    result = reader.ReadToEnd();
+                    List<int> intermedio= new List<int>();
+                    buffer = reader.ReadBytes(2000);
+                    foreach (var value in buffer)
+                    {
+                       intermedio = Data.Instance.huffman.Encode((char)value);
+                    }
+                    foreach (int item in intermedio)
+                    {
+                        texto += item;
+                    }
                 }
+                reader2.Close();
+                fileRead2.Close();
+
+                byte[] data = Data.Instance.huffman.GetBytesFromBinaryString(texto);
+                string valor = "";
+                foreach (var item in data)
+                {
+                    valor += (char)item;
+                }
+                String textofinal = "";
+
+                textofinal = metadata + valor;
+
+                using var fileWrite = new FileStream("output.huff", FileMode.OpenOrCreate);
+                var writer = new StreamWriter(fileWrite);
+                writer.Write(textofinal);
+                fileWrite.Close();
+                writer.Close();
+
+
+                //Data.Instance.huffman.Huff();
+                //StreamWriter nuevoarchivo = new StreamWriter(name);
+                //nuevoarchivo.Write(texto2);
+
+                //name = name + ".huff";
+                //TextWriter escritor = new StreamWriter(name, true);
+                //string result;
+                //using (var reader = new StreamReader(file.OpenReadStream()))
+                //{
+                //    result = reader.ReadToEnd();
+                //}
                 return Created("", name);
             }
             catch (Exception ex)
@@ -89,13 +129,28 @@ namespace Lab1.Controllers
             {
                 if (descompress == "descompress")
                 {
-                    string result;
-                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    string result="";
+                    //using (var reader = new StreamReader(file.OpenReadStream()))
+                    //{
+                    //    result = reader.ReadToEnd();
+                    //}
+                    List<char> decoding = new List<char>();
+                    using var fileRead = new FileStream("output.huff", FileMode.OpenOrCreate);
+                    using var reader = new BinaryReader(fileRead);
+                    var buffer = new byte[2000];
+                    
+                    while (fileRead.Position < fileRead.Length)
                     {
-                        result = reader.ReadToEnd();
+                        buffer = reader.ReadBytes(2000);
+                        foreach (var value in buffer)
+                        {
+                            result+=(char)value;
+                        }
                     }
-                    var huffman = new Huffman<char>(result);
-                    List<char> decoding = huffman.ArmarArbol(result);
+                    reader.Close();
+                    fileRead.Close();
+                    Data.Instance.huffman.ArmarArbol(result);
+                    decoding = Data.Instance.huffman.Decodewometadata(result);
                     foreach (char item in decoding)
                     {
                         Data.Instance.texto += item;
@@ -103,6 +158,7 @@ namespace Lab1.Controllers
 
                     StreamWriter archivo = new StreamWriter(Data.Instance.nombre);
                     archivo.Write(Data.Instance.texto);
+                    archivo.Close();
                     return Ok();
                 }
                 else
