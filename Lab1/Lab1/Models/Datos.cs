@@ -13,5 +13,17 @@ namespace Lab1.Models
         public double Factordecompresión { get; set; }
         public double Porcentajedereducción { get; set; }
 
+        public Datos(string nombre1, string nombre2, double razon, double factor, double porcentaje)
+        {
+
+            Nombredelarchivooriginal = nombre1;
+            Nombreyrutadelarchivocomprimido = nombre2;
+            Razóndecompresión = razon;
+            Factordecompresión = factor;
+            Porcentajedereducción = porcentaje;
+        }
+        public Datos() { }
+
+
     }
 }

@@ -21,9 +21,12 @@ namespace Lab1.Models
 
         }
 
-        public Huffman<char> huffman = new huffman_prueba.Huffman<char>();
+        public Huffman<byte> huffman = new Huffman<byte>();
+        public List<Datos> archivos = new List<Datos>();
+
         public int Size = 0;
         public string nombre = "";
         public string texto = "";
+
     }
 }
