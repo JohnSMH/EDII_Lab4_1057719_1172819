@@ -19,7 +19,7 @@ namespace Lab1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MoviesController : ControllerBase
+    public class HuffmanController : ControllerBase
     {
         [HttpGet]
         public IActionResult Mostrar()
@@ -98,18 +98,6 @@ namespace Lab1.Controllers
                 fileWrite.Close();
                 writer.Close();
 
-
-                //Data.Instance.huffman.Huff();
-                //StreamWriter nuevoarchivo = new StreamWriter(name);
-                //nuevoarchivo.Write(texto2);
-
-                //name = name + ".huff";
-                //TextWriter escritor = new StreamWriter(name, true);
-                //string result;
-                //using (var reader = new StreamReader(file.OpenReadStream()))
-                //{
-                //    result = reader.ReadToEnd();
-                //}
                 return Created("", name);
             }
             catch (Exception ex)
