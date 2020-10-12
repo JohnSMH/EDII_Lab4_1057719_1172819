@@ -193,8 +193,12 @@ namespace Lab1.Controllers
                 escritor.Write(decoding.ToArray());
                 escritor.Close();
                 archivo.Close();
-                return Ok();
-   
+                var files = System.IO.File.OpenRead(output);
+                return new FileStreamResult(files, "application/txt")
+                {
+                    FileDownloadName = output
+                };
+
             }
             catch (Exception ex)
             {
