@@ -35,9 +35,9 @@ namespace huffman_prueba
 
         internal bool IsZero { get; set; }
 
-        internal int Bit
+        internal bool Bit
         {
-            get { return IsZero ? 0 : 1; }
+            get { return !IsZero; }
         }
 
         internal bool IsRoot
@@ -177,33 +177,33 @@ namespace huffman_prueba
             _root.IsZero = false;
         }
 
-        public List<int> Encode(byte value)
+        public List<bool> Encode(byte value)
         {
             
             
-            var returnValue = new List<int>();
+            var returnValue = new List<bool>();
             Encode(value, returnValue);
             return returnValue;
         }
 
         public List<byte> Decodewometadata(byte[] codigo) {
-            string codigobits = Regresar(codigo);
+            List<bool> codigobits = Regresar(codigo);
             List<int> codigobin = new List<int>();
-            foreach (var item in codigobits.ToCharArray())
+            foreach (var item in codigobits)
             {
-                codigobin.Add(int.Parse(item.ToString()));
+                codigobin.Add(Convert.ToInt32(item));
             }
             return Decode(codigobin);
 
         }
-        public void Encode(byte value, List<int> encoding)
+        public void Encode(byte value, List<bool> encoding)
         {
             if (!_leafDictionary.ContainsKey(value))
             {
                 throw new ArgumentException("Invalid value in Encode");
             }
             HuffmanNode<T> nodeCur = _leafDictionary[value];
-            var reverseEncoding = new List<int>();
+            var reverseEncoding = new List<bool>();
             while (!nodeCur.IsRoot)
             {
                 reverseEncoding.Add(nodeCur.Bit);
@@ -215,9 +215,9 @@ namespace huffman_prueba
         }
 
 
-        public List<int> Encode(IEnumerable<byte> values)
+        public List<bool> Encode(IEnumerable<byte> values)
         {
-            var returnValue = new List<int>();
+            var returnValue = new List<bool>();
 
             foreach (byte value in values)
             {
@@ -281,7 +281,7 @@ namespace huffman_prueba
 
       
 
-        public string Regresar(byte[] codigo) {
+        public List<bool> Regresar(byte[] codigo) {
             int cantvalores = Convert.ToInt32(codigo[0]);
             int bytes = Convert.ToInt32(codigo[1]) + 1;
             List<int> codigos = new List<int>();
@@ -289,12 +289,13 @@ namespace huffman_prueba
 
             List<byte> arrbytes = new List<byte>();
             String cadenabits = "";
+            List<bool> arrbits = new List<bool>();
 
             for (int i = (cantvalores * bytes) + 2; i < codigo.Length; i++)
             {
-                cadenabits += Convert.ToString(codigo[i], 2).PadLeft(8, '0');
+                arrbits.AddRange(BytetoBool(codigo[i]));
             }
-            return cadenabits;
+            return arrbits;
         }
 
         public static T GetValue(string value)
@@ -338,6 +339,15 @@ namespace huffman_prueba
             }
 
             return list.ToArray();
+        }
+
+        public bool[] BytetoBool(byte range)
+        {
+            bool[] bools = new bool[8];
+            for (int i = 0; i < 8; i++)
+                bools[7-i] = (range & (1 << i)) > 0;
+
+            return bools;
         }
     }
 
