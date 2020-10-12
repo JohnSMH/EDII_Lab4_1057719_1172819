@@ -97,7 +97,7 @@ namespace huffman_prueba
             writer.Close();
             fileWrite.Close();
 
-
+            //COMPRIMIR TERMINA AQUI
 
 
             List<byte> result = new List<byte>();
