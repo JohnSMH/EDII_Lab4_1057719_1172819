@@ -10,8 +10,9 @@ namespace huffman_prueba
         static void Main(string[] args)
         {
             //armar el arbol
-            Huffman<char> huffman = new Huffman<char>(); 
-            using var fileRead = new FileStream("cuento.txt", FileMode.OpenOrCreate);
+            
+            Huffman<byte> huffman = new Huffman<byte>();
+            using var fileRead = new FileStream("easy test.txt", FileMode.OpenOrCreate);
             using var reader = new BinaryReader(fileRead);
             var buffer = new byte[2000];
             while (fileRead.Position < fileRead.Length)
@@ -19,12 +20,12 @@ namespace huffman_prueba
                 buffer = reader.ReadBytes(2000);
                 foreach (var value in buffer)
                 {
-                    huffman.fill((char)value);
+                    huffman.fill(value);
                 }
             }
-            
+
             //encodificar el archivo
-            String metadata = huffman.Huff();
+            byte[] metadata = huffman.Huff();
             fileRead.Position = 0;
             buffer = new byte[2000];
             String texto = "";
@@ -34,10 +35,12 @@ namespace huffman_prueba
                 buffer = reader.ReadBytes(2000);
                 foreach (var value in buffer)
                 {
-                    intermedio.AddRange(huffman.Encode((char)value));
+                    intermedio.AddRange(huffman.Encode(value));
                 }
+                //System.List.int
                 foreach (int item in intermedio)
                 {
+
                     texto += item;
                 }
             }
@@ -45,30 +48,32 @@ namespace huffman_prueba
             fileRead.Close();
 
             byte[] data = huffman.GetBytesFromBinaryString(texto);
-            string valor = "";
-            foreach (var item in data)
-            {
-                valor += (char)item;
-            }
-            String textofinal = "";
 
-            textofinal = metadata + valor;
+
+            List<byte> bytesfinal = new List<byte>();
+
+            bytesfinal.AddRange(metadata);
+            bytesfinal.AddRange(data);
+
+            //YA NO
+            //IMPLEMENTAR BUFFER
 
             using var fileWrite = new FileStream("output.huff", FileMode.OpenOrCreate);
-            var writer = new StreamWriter(fileWrite);
-            writer.Write(textofinal);
+            var writer = new BinaryWriter(fileWrite);
+
+            writer.Write(bytesfinal.ToArray());
             writer.Close();
             fileWrite.Close();
 
 
 
 
-            string result = "";
+            List<byte> result = new List<byte>();
             //using (var reader = new StreamReader(file.OpenReadStream()))
             //{
             //    result = reader.ReadToEnd();
             //}
-            List<char> decoding = new List<char>();
+            List<byte> decoding = new List<byte>();
             using var fileRead2 = new FileStream("output1.huff", FileMode.OpenOrCreate);
             using var reader2 = new BinaryReader(fileRead2);
             buffer = new byte[2000];
@@ -76,26 +81,29 @@ namespace huffman_prueba
             while (fileRead2.Position < fileRead2.Length)
             {
                 buffer = reader2.ReadBytes(2000);
-                foreach (var value in buffer)
+                foreach (byte value in buffer)
                 {
-                    result += (char)value;
+                    result.Add(value);
                 }
             }
             reader2.Close();
             fileRead2.Close();
-            huffman.ArmarArbol(result);
-            decoding = huffman.Decodewometadata(result);
-            string deregreso = "";
-            foreach (char item in decoding)
-            {
-                deregreso += item;
-            }
+            huffman.ArmarArbol(result.ToArray());
+            decoding = huffman.Decodewometadata(result.ToArray());
 
-            var archivo = new FileStream("output2", FileMode.OpenOrCreate);
-            var escritor = new StreamWriter(archivo);
-            escritor.Write(deregreso);
+
+            //Buffer de escritura
+            var archivo = new FileStream("output2.txt", FileMode.OpenOrCreate);
+            var escritor = new BinaryWriter(archivo);
+
+            escritor.Write(decoding.ToArray());
             escritor.Close();
             archivo.Close();
+            //var archivo = new FileStream("output2", FileMode.OpenOrCreate);
+            //var escritor = new StreamWriter(archivo);
+            //escritor.Write(deregreso);
+            //escritor.Close();
+            //archivo.Close();
 
 
 
