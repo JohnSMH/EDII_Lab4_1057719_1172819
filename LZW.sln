@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "huffman prueba", "huffman prueba\huffman prueba.csproj", "{5E81E069-3B2B-46F2-AE11-8B348E56CDAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LZW prueba", "huffman prueba\LZW prueba.csproj", "{5E81E069-3B2B-46F2-AE11-8B348E56CDAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API HUFFMAN", "Lab1\Lab1\API HUFFMAN.csproj", "{FBD2F55A-8952-4BA5-BF5C-A8AA4CE5ED9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API LZW", "Lab1\Lab1\API LZW.csproj", "{FBD2F55A-8952-4BA5-BF5C-A8AA4CE5ED9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

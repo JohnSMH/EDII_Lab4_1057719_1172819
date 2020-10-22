@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\huffman prueba\huffman prueba.csproj" />
+    <ProjectReference Include="..\..\huffman prueba\LZW prueba.csproj" />
   </ItemGroup>
 
 
