@@ -38,14 +38,65 @@ namespace huffman_prueba
                     }
                 }
             }
-           
+
             //INTERMEDIO A BYTES
+            List<byte> Aescribir = new List<byte>();
+
+            foreach (int item in Intermedio)
+            {
+                Aescribir.AddRange(BitConverter.GetBytes(item));
+            }
+
             //ESCRIBIR COMPRIMIDO
+
+            using var fileWrite = new FileStream("LZWtest.txt", FileMode.OpenOrCreate);
+            var writer = new BinaryWriter(fileWrite);
+
+            writer.Write(Aescribir.ToArray());
+            writer.Close();
+            
+
             //LEER DOCUMENTO CODIFICADO
+            List<byte> result = new List<byte>();
+            //using (var reader = new StreamReader(file.OpenReadStream()))
+            //{
+            //    result = reader.ReadToEnd();
+            //}
+            
+            using var fileRead2 = new FileStream("LZWtest.txt", FileMode.OpenOrCreate);
+            using var reader2 = new BinaryReader(fileRead2);
+            
+            buffer = new byte[2000];
+
+            while (fileRead2.Position < fileRead2.Length)
+            {
+                buffer = reader2.ReadBytes(2000);
+                foreach (byte value in buffer)
+                {
+                    result.Add(value);
+                }
+            }
+            reader2.Close();
+            fileRead2.Close();
+
             //DECODIFICAR
-
-
-
+            String total = "";
+            bool first = true;
+            for (int i = 0; i < result.Count; i=i+4)
+            {
+                byte[] plzwork = new byte[] { result[i], result[i + 1], result[i + 2], result[i + 3] };
+                if (first)
+                {
+                    total=testing.Firstdeco(BitConverter.ToInt32(plzwork));
+                    first = false;
+                }
+                else {
+                    total += testing.Decode(BitConverter.ToInt32(plzwork));
+                }
+                
+                
+            }
+            Console.WriteLine(total);
             ////encodificar el archivo
             //byte[] metadata = huffman.Huff();
             //fileRead.Position = 0;
