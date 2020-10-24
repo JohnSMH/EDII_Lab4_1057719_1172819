@@ -21,9 +21,7 @@ namespace Lab1.Models
 
         }
 
-        public LZW acceder= new LZW();
         public List<Datos> archivos = new List<Datos>();
-
         public int Size = 0;
         public string nombre = "";
         public string texto = "";

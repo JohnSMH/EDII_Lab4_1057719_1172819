@@ -89,16 +89,15 @@ namespace Lab1.Controllers
 
                 //ESCRIBIR COMPRIMIDO
 
-                using var fileWrite = new FileStream("LZWtest.txt", FileMode.OpenOrCreate);
+                using var fileWrite = new FileStream(name + ".lzw", FileMode.OpenOrCreate);
                 var writer = new BinaryWriter(fileWrite);
 
                 writer.Write(Aescribir.ToArray());
-                writer.Close();
 
                 Datos obtener = new Datos();
                 obtener.Razóndecompresión = (Convert.ToDouble(fileWrite.Length) / Convert.ToDouble(fileRead.Length));
                 obtener.Factordecompresión = (Convert.ToDouble(fileRead.Length) / Convert.ToDouble(fileWrite.Length));
-                obtener.Porcentajedereducción = (Convert.ToDouble(fileRead.Length) / Convert.ToDouble(fileWrite.Length)) * 100;
+                obtener.Porcentajedereducción = (Convert.ToDouble(fileWrite.Length) / Convert.ToDouble(fileRead.Length)) * 100;
                 obtener.Nombredelarchivooriginal = (file.FileName);
                 obtener.Nombreyrutadelarchivocomprimido = (name + ".lzw");
                 Data.Instance.archivos.Add(obtener);
@@ -127,46 +126,17 @@ namespace Lab1.Controllers
         {
             try
             {
+                 LZW acceder = new LZW();
                 string input= file.FileName;
-                List<byte> result = new List<byte>();
                 List<byte> decoding = new List<byte>();
                 using var fileRead2 = new FileStream(input, FileMode.OpenOrCreate);
                 using var reader2 = new BinaryReader(fileRead2);
-                var buffer = new byte[2000];
-                while (fileRead2.Position < fileRead2.Length)
-                {
-                    buffer = reader2.ReadBytes(2000);
-                    foreach (byte value in buffer)
-                    {
-                        result.Add(value);
-                    }
-                }
-
-                //DECODIFICAR
-                List<byte> total;
+                var buffer = new byte[4];
                 bool first = true;
-                for ( int j = 0; j < result.Count; j = j + 4)
-                {
-                    byte[] plzwork = new byte[] { result[j], result[j + 1], result[j + 2], result[j + 3] };
-                    if (first)
-                    {
-                        total = Data.Instance.acceder.Firstdeco(BitConverter.ToInt32(plzwork));
-                        first = false;
-                    }
-                    else
-                    {
-                        total += Data.Instance.acceder.Decode(BitConverter.ToInt32(plzwork));
-                    }
-
-
-                }
-
-                reader2.Close();
-                fileRead2.Close();
-                Data.Instance.LZW.ArmarArbol(result.ToArray());
-                decoding = Data.Instance.LZW.Decodewometadata(result.ToArray());
-                int i = 0;
+                String total = null;
                 string output = "";
+                int i = 0;
+
                 foreach (Datos item in Data.Instance.archivos)
                 {
                     if (item.Nombreyrutadelarchivocomprimido == input)
@@ -176,12 +146,35 @@ namespace Lab1.Controllers
                     }
                     i++;
                 }
-               
-                //Buffer de escritura
+
                 var archivo = new FileStream(output, FileMode.OpenOrCreate);
                 var escritor = new BinaryWriter(archivo);
 
-                escritor.Write(decoding.ToArray());
+                while (fileRead2.Position < fileRead2.Length)
+                {
+                    buffer = reader2.ReadBytes(4);
+                    byte[] plzwork = new byte[] { buffer[0], buffer[1], buffer[2], buffer[3] };
+                    if (first)
+                    {
+                        total = acceder.Firstdeco(BitConverter.ToInt32(plzwork));
+                        first = false;
+                    }
+                    else
+                    {
+                        total = acceder.Decode(BitConverter.ToInt32(plzwork));
+                    }
+                    foreach (var item in total)
+                    {
+                        escritor.Write((byte)item);
+                    }
+
+                }
+
+                //DECODIFICAR
+
+
+                reader2.Close();
+                fileRead2.Close();;
                 escritor.Close();
                 archivo.Close();
                 var files = System.IO.File.OpenRead(output);

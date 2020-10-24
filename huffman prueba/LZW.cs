@@ -36,6 +36,7 @@ namespace huffman_prueba
                 return Diccionario[encodificador];
             }
         }
+
         public void Fill(byte entrada) {
             string insert = ""+(char)entrada;
             if (!Diccionario.ContainsKey(insert)) {
@@ -43,13 +44,12 @@ namespace huffman_prueba
             }
         }
 
-        public List<byte> Firstdeco(int entrada) {
+        public string Firstdeco(int entrada) {
             deco = Diccionariosalida[entrada];
-            List<byte> bytes = Encoding.ASCII.GetBytes(Diccionariosalida[entrada]).ToList();
-            return bytes;
+            return Diccionariosalida[entrada];
         }
 
-        public List<byte> Decode(int entrada) {
+        public string Decode(int entrada) {
             string resultado = null;
 
             if (Diccionariosalida.ContainsKey(entrada)) {
@@ -58,14 +58,11 @@ namespace huffman_prueba
             else if (entrada == Diccionariosalida.Count)
                 resultado =  deco + deco[0];
 
-            
-
-            // new sequence; add it to the dictionary
+  
             Diccionariosalida.Add(Diccionariosalida.Count, deco + resultado[0]);
 
             deco = resultado;
-            List<byte> resultados = Encoding.ASCII.GetBytes(resultado).ToList();
-            return resultados;
+            return resultado;
         }
 
 
