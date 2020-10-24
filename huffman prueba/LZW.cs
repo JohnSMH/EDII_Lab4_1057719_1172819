@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace huffman_prueba
 {
-    class LZW
+    public class LZW
     {
         Dictionary<string, int> Diccionario;
         Dictionary<int, string> Diccionariosalida;
@@ -41,11 +43,13 @@ namespace huffman_prueba
             }
         }
 
-        public string Firstdeco(int entrada) {
+        public List<byte> Firstdeco(int entrada) {
             deco = Diccionariosalida[entrada];
-            return Diccionariosalida[entrada];
+            List<byte> bytes = Encoding.ASCII.GetBytes(Diccionariosalida[entrada]).ToList();
+            return bytes;
         }
-        public string Decode(int entrada) {
+
+        public List<byte> Decode(int entrada) {
             string resultado = null;
 
             if (Diccionariosalida.ContainsKey(entrada)) {
@@ -60,7 +64,8 @@ namespace huffman_prueba
             Diccionariosalida.Add(Diccionariosalida.Count, deco + resultado[0]);
 
             deco = resultado;
-            return resultado;
+            List<byte> resultados = Encoding.ASCII.GetBytes(resultado).ToList();
+            return resultados;
         }
 
 

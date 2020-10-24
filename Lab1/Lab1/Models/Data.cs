@@ -21,7 +21,7 @@ namespace Lab1.Models
 
         }
 
-        public Huffman<byte> huffman = new Huffman<byte>();
+        public LZW acceder= new LZW();
         public List<Datos> archivos = new List<Datos>();
 
         public int Size = 0;

@@ -87,7 +87,7 @@ namespace huffman_prueba
                 byte[] plzwork = new byte[] { result[i], result[i + 1], result[i + 2], result[i + 3] };
                 if (first)
                 {
-                    total=testing.Firstdeco(BitConverter.ToInt32(plzwork));
+                    total= testing.Firstdeco(BitConverter.ToInt32(plzwork));
                     first = false;
                 }
                 else {

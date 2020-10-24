@@ -22,12 +22,12 @@ namespace Lab1.Controllers
 {
     [Route("api")]
     [ApiController]
-    public class HuffmanController : ControllerBase
+    public class LzwController : ControllerBase
     {
         [HttpGet]
         public IActionResult Mostrar()
         {
-            return new JsonResult(new { BIENVENIDA = "LABORATORIO 3" }); 
+            return new JsonResult(new { BIENVENIDA = "LABORATORIO 4" }); 
         }
 
         [HttpGet("compressions")]
@@ -54,90 +54,63 @@ namespace Lab1.Controllers
             using var fileRead = file.OpenReadStream();
             try
             {
-                //using var fileRead = new FileStream(file.FileName, FileMode.OpenOrCreate);
+                LZW testing = new LZW();
                 using var reader = new BinaryReader(fileRead);
                 var buffer = new byte[2000];
+                int existe = 0;
+                string encodificador = "";
+                List<int> Intermedio = new List<int>();
                 while (fileRead.Position < fileRead.Length)
                 {
                     buffer = reader.ReadBytes(2000);
                     foreach (var value in buffer)
                     {
-                        Data.Instance.huffman.fill(value);
+                        string trabajo = encodificador + (char)value;
+                        existe = testing.Encode(trabajo, encodificador);
+                        if (existe != -1)
+                        {
+                            Intermedio.Add(existe);
+                            encodificador = "" + (char)value;
+                        }
+                        else
+                        {
+                            encodificador = trabajo;
+                        }
                     }
                 }
 
-                //encodificar el archivo
-                byte[] metadata = Data.Instance.huffman.Huff();
-                fileRead.Position = 0;
-                buffer = new byte[2000];
-                List<bool> intermedio = new List<bool>();
-                while (fileRead.Position < fileRead.Length)
-                {
+                //INTERMEDIO A BYTES
+                List<byte> Aescribir = new List<byte>();
 
-                    buffer = reader.ReadBytes(2000);
-                    foreach (var value in buffer)
-                    {
-                        intermedio.AddRange(Data.Instance.huffman.Encode(value));
-                    }
+                foreach (int item in Intermedio)
+                {
+                    Aescribir.AddRange(BitConverter.GetBytes(item));
                 }
 
+                //ESCRIBIR COMPRIMIDO
 
-                if (intermedio.Count % 8 != 0)
-                {
-                    for (int i = intermedio.Count % 8; i < 8; i++)
-                    {
-                        intermedio.Add(false);
-                    }
-                }
-
-                BitArray bits = new BitArray(intermedio.ToArray());
-                byte[] data = new byte[bits.Length / 8];
-
-                int contador = 0;
-                for (int i = 0; i < bits.Length; i = i + 8)
-                {
-                    BitArray bitscambio = new BitArray(8);
-                    bitscambio[0] = bits[i + 7];
-                    bitscambio[1] = bits[i + 6];
-                    bitscambio[2] = bits[i + 5];
-                    bitscambio[3] = bits[i + 4];
-                    bitscambio[4] = bits[i + 3];
-                    bitscambio[5] = bits[i + 2];
-                    bitscambio[6] = bits[i + 1];
-                    bitscambio[7] = bits[i];
-                    byte[] convert = new byte[1];
-                    bitscambio.CopyTo(convert, 0);
-                    data[contador] = convert[0];
-                    contador++;
-                }
-
-
-                List<byte> bytesfinal = new List<byte>();
-
-                bytesfinal.AddRange(metadata);
-                bytesfinal.AddRange(data);
-
-                using var fileWrite = new FileStream(name + ".huff", FileMode.OpenOrCreate);
+                using var fileWrite = new FileStream("LZWtest.txt", FileMode.OpenOrCreate);
                 var writer = new BinaryWriter(fileWrite);
 
-                writer.Write(bytesfinal.ToArray());
+                writer.Write(Aescribir.ToArray());
+                writer.Close();
 
                 Datos obtener = new Datos();
                 obtener.Razóndecompresión = (Convert.ToDouble(fileWrite.Length) / Convert.ToDouble(fileRead.Length));
                 obtener.Factordecompresión = (Convert.ToDouble(fileRead.Length) / Convert.ToDouble(fileWrite.Length));
                 obtener.Porcentajedereducción = (Convert.ToDouble(fileRead.Length) / Convert.ToDouble(fileWrite.Length)) * 100;
                 obtener.Nombredelarchivooriginal = (file.FileName);
-                obtener.Nombreyrutadelarchivocomprimido = (name + ".huff");
+                obtener.Nombreyrutadelarchivocomprimido = (name + ".lzw");
                 Data.Instance.archivos.Add(obtener);
                 writer.Close();
                 fileWrite.Close();
                 reader.Close();
                 fileRead.Close();
 
-                var files = System.IO.File.OpenRead(name + ".huff");
-                return new FileStreamResult(files, "application/huff")
+                var files = System.IO.File.OpenRead(name + ".lzw");
+                return new FileStreamResult(files, "application/lzw")
                 {
-                    FileDownloadName = name + ".huff"
+                    FileDownloadName = name + ".lzw"
                 };
             }
             catch (Exception ex)
@@ -160,8 +133,6 @@ namespace Lab1.Controllers
                 using var fileRead2 = new FileStream(input, FileMode.OpenOrCreate);
                 using var reader2 = new BinaryReader(fileRead2);
                 var buffer = new byte[2000];
-                buffer = new byte[2000];
-
                 while (fileRead2.Position < fileRead2.Length)
                 {
                     buffer = reader2.ReadBytes(2000);
@@ -170,10 +141,30 @@ namespace Lab1.Controllers
                         result.Add(value);
                     }
                 }
+
+                //DECODIFICAR
+                List<byte> total;
+                bool first = true;
+                for ( int j = 0; j < result.Count; j = j + 4)
+                {
+                    byte[] plzwork = new byte[] { result[j], result[j + 1], result[j + 2], result[j + 3] };
+                    if (first)
+                    {
+                        total = Data.Instance.acceder.Firstdeco(BitConverter.ToInt32(plzwork));
+                        first = false;
+                    }
+                    else
+                    {
+                        total += Data.Instance.acceder.Decode(BitConverter.ToInt32(plzwork));
+                    }
+
+
+                }
+
                 reader2.Close();
                 fileRead2.Close();
-                Data.Instance.huffman.ArmarArbol(result.ToArray());
-                decoding = Data.Instance.huffman.Decodewometadata(result.ToArray());
+                Data.Instance.LZW.ArmarArbol(result.ToArray());
+                decoding = Data.Instance.LZW.Decodewometadata(result.ToArray());
                 int i = 0;
                 string output = "";
                 foreach (Datos item in Data.Instance.archivos)
